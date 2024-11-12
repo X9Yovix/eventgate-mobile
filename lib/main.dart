@@ -1,4 +1,5 @@
 import 'package:eventgate_flutter/view/landing_screen.dart';
+import 'package:eventgate_flutter/view/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -8,13 +9,15 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'EventGate',
       theme: _buildTheme(Brightness.light),
       home: const LandingScreen(),
+      routes: {
+        '/auth': (context) => const AuthScreen(),
+      },
       /* theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
