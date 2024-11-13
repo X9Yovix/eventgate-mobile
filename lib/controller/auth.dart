@@ -1,10 +1,13 @@
 import 'package:eventgate_flutter/model/token.dart';
 import 'package:eventgate_flutter/model/user.dart';
 import 'package:eventgate_flutter/service/auth.dart';
+import 'package:eventgate_flutter/utils/auth_provider.dart';
 import 'package:flutter/material.dart';
 
 class AuthController {
   final AuthService authService = AuthService();
+  final AuthProvider authProvider = AuthProvider();
+
   User? _user;
   Profile? _profile;
   Token? _token;
@@ -54,6 +57,28 @@ class AuthController {
         }
 
         if (response['data'] != null) {
+          _message = response['data']['message'];
+          return;
+        }
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
+      _error = 'Internal server error';
+    }
+  }
+
+  Future<void> logout(Token tokens) async {
+    try {
+      var response = await authService.logout(tokens.access, tokens.refresh);
+
+      if (response != null) {
+        if (response['error'] != null) {
+          _error = response['error'];
+          return;
+        }
+
+        if (response['data'] != null) {
+          await authProvider.logout();
           _message = response['data']['message'];
           return;
         }

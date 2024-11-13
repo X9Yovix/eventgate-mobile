@@ -19,6 +19,15 @@ class User {
       email: json['email'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'username': username,
+      'first_name': firstName,
+      'last_name': lastName,
+      'email': email,
+    };
+  }
 }
 
 class Profile {
