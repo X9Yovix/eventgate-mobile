@@ -1,4 +1,5 @@
 import 'package:eventgate_flutter/utils/auth_provider.dart';
+import 'package:eventgate_flutter/view/complete_profile_screen.dart';
 import 'package:eventgate_flutter/view/landing_screen.dart';
 import 'package:eventgate_flutter/view/auth_screen.dart';
 import 'package:eventgate_flutter/view/main_screen.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/auth': (context) => const AuthScreen(),
+        '/complete-profile': (context) => const CompleteProfileScreen(),
       },
       // theme: ThemeData(
       //  colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

@@ -1,5 +1,6 @@
 import 'package:eventgate_flutter/utils/app_utils.dart';
 import 'package:eventgate_flutter/utils/auth_provider.dart';
+import 'package:eventgate_flutter/view/complete_profile_screen.dart';
 import 'package:eventgate_flutter/view/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:eventgate_flutter/controller/auth.dart';
@@ -32,9 +33,24 @@ class _LoginFormState extends State<LoginForm> {
         await _authController.login(username, password);
         if (_authController.getMessage() != null) {
           AppUtils.showToast(context, _authController.getMessage()!, 'success');
-          await Provider.of<AuthProvider>(context, listen: false)
-              .login(_authController.getUser(), _authController.getToken());
-          AppUtils.navigateToAndClearStack(context, const MainScreen());
+
+          await Provider.of<AuthProvider>(context, listen: false).login(
+              _authController.getUser(),
+              _authController.getProfile(),
+              _authController.getToken());
+
+          debugPrint(
+              '_authController.getProfile()!.isProfileComplete ${_authController.getProfile()!.isProfileComplete}');
+          debugPrint(
+              '_authController.getProfile()!.skipIsProfileComplete ${_authController.getProfile()!.skipIsProfileComplete}');
+
+          if (_authController.getProfile()!.isProfileComplete == false ||
+              _authController.getProfile()!.skipIsProfileComplete == false) {
+            AppUtils.navigateToAndClearStack(
+                context, const CompleteProfileScreen());
+          } else {
+            AppUtils.navigateToAndClearStack(context, const MainScreen());
+          }
         }
         if (_authController.getError() != null) {
           AppUtils.showToast(context, _authController.getError()!, 'error');

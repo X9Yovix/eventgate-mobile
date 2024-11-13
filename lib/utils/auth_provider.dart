@@ -17,18 +17,20 @@ class AuthProvider with ChangeNotifier {
 
   bool get isAuthenticated => _isAuthenticated;
 
-  Future<bool> login(User? user, Token? token) async {
-    if (user == null || token == null) {
+  Future<bool> login(User? user, Profile? profile, Token? token) async {
+    if (user == null || token == null || profile == null) {
       return false;
     }
 
     _isAuthenticated = true;
     _user = user;
+    _profile = profile;
     _token = token;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isAuthenticated', true);
     await prefs.setString('user', jsonEncode(user.toJson()));
+    await prefs.setString('profile', jsonEncode(profile.toJson()));
     await prefs.setString('token', jsonEncode(token.toJson()));
     notifyListeners();
     return true;
@@ -37,6 +39,7 @@ class AuthProvider with ChangeNotifier {
   Future<void> logout() async {
     _isAuthenticated = false;
     _user = null;
+    _profile = null;
     _token = null;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -50,10 +53,15 @@ class AuthProvider with ChangeNotifier {
     _isAuthenticated = prefs.getBool('isAuthenticated') ?? false;
     debugPrint('isAuthenticated: $_isAuthenticated');
     String? userJson = prefs.getString('user');
+    String? profileJson = prefs.getString('profile');
     String? tokenJson = prefs.getString('token');
 
-    if (_isAuthenticated && userJson != null && tokenJson != null) {
+    if (_isAuthenticated &&
+        userJson != null &&
+        profileJson != null &&
+        tokenJson != null) {
       _user = User.fromJson(jsonDecode(userJson));
+      _profile = Profile.fromJson(jsonDecode(profileJson));
       _token = Token.fromJson(jsonDecode(tokenJson));
     }
 

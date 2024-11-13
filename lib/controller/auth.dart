@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:eventgate_flutter/model/token.dart';
 import 'package:eventgate_flutter/model/user.dart';
 import 'package:eventgate_flutter/service/auth.dart';
@@ -11,12 +13,14 @@ class AuthController {
   User? _user;
   Profile? _profile;
   Token? _token;
+
   String? _message;
   String? _error;
 
   User? getUser() => _user;
   Profile? getProfile() => _profile;
   Token? getToken() => _token;
+
   String? getMessage() => _message;
   String? getError() => _error;
   void setMessage(String? message) => _message = message;
@@ -79,6 +83,49 @@ class AuthController {
 
         if (response['data'] != null) {
           await authProvider.logout();
+          _message = response['data']['message'];
+          return;
+        }
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
+      _error = 'Internal server error';
+    }
+  }
+
+  Future<void> completeProfile(Profile profile, File? image) async {
+    try {
+      var response = await authService.completeProfile(profile, image);
+
+      if (response != null) {
+        if (response['error'] != null) {
+          _error = response['error'];
+          return;
+        }
+
+        if (response['data'] != null) {
+          _message = response['data']['message'];
+          return;
+        }
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
+      _error = 'Internal server error';
+    }
+  }
+
+  Future<void> skipCompleteProfile(Token? tokens) async {
+    try {
+      debugPrint('he: start controller');
+      var response = await authService.skipCompleteProfile(tokens);
+      debugPrint('he: controller $response');
+      if (response != null) {
+        if (response['error'] != null) {
+          _error = response['error'];
+          return;
+        }
+
+        if (response['data'] != null) {
           _message = response['data']['message'];
           return;
         }

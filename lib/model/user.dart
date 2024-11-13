@@ -60,4 +60,16 @@ class Profile {
       skipIsProfileComplete: json['skip_is_profile_complete'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'birth_date': birthDate,
+      'gender': gender,
+      'phone_number': phoneNumber,
+      'bio': bio,
+      "profile_picture": profilePicture,
+      "is_profile_complete": isProfileComplete,
+      "skip_is_profile_complete": skipIsProfileComplete
+    };
+  }
 }

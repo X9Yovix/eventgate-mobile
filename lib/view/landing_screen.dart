@@ -34,7 +34,7 @@ class LandingScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: Container(
+              child: SizedBox(
                 width: double.infinity,
                 child: Column(
                   children: [
