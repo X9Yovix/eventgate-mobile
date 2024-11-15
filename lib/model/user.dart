@@ -31,13 +31,13 @@ class User {
 }
 
 class Profile {
-  final String? birthDate;
-  final String? gender;
-  final String? phoneNumber;
-  final String? bio;
-  final String? profilePicture;
-  final bool isProfileComplete;
-  final bool skipIsProfileComplete;
+  String? birthDate;
+  String? gender;
+  String? phoneNumber;
+  String? bio;
+  String? profilePicture;
+  bool isProfileComplete;
+  bool skipIsProfileComplete;
 
   Profile({
     this.birthDate,

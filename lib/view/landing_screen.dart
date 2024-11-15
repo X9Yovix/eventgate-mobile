@@ -1,3 +1,4 @@
+import 'package:eventgate_flutter/utils/app_utils.dart';
 import 'package:eventgate_flutter/view/auth_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -60,7 +61,7 @@ class LandingScreen extends StatelessWidget {
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).push(_createRoute());
+                        AppUtils.navigateWithFade(context, const AuthScreen());
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
@@ -81,16 +82,4 @@ class LandingScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-Route _createRoute() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => const AuthScreen(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      return FadeTransition(
-        opacity: animation,
-        child: child,
-      );
-    },
-  );
 }

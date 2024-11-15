@@ -1,8 +1,8 @@
 import 'package:eventgate_flutter/controller/auth.dart';
-import 'package:eventgate_flutter/model/token.dart';
 import 'package:eventgate_flutter/model/user.dart';
 import 'package:eventgate_flutter/utils/app_utils.dart';
 import 'package:eventgate_flutter/utils/auth_provider.dart';
+import 'package:eventgate_flutter/view/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
@@ -69,19 +69,14 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     }
   }
 
-  void _skipCompleteProfile(AuthProvider value, context) async {
+  void _skipCompleteProfile(context) async {
     try {
       setState(() {
         _isLoading = true;
       });
-      debugPrint('he: skin view');
-      Token tokens = Token(
-        access: value.token!.access,
-        refresh: value.token!.refresh,
-      );
-      await _authController.skipCompleteProfile(tokens);
-      debugPrint('he: after skin view');
+      await _authController.skipCompleteProfile(context);
       AppUtils.showToast(context, _authController.getMessage()!, 'success');
+      AppUtils.navigateWithSlideAndClearStack(context, const MainScreen());
     } catch (error) {
       AppUtils.showToast(context, _authController.getError()!, 'error');
     } finally {
@@ -93,27 +88,54 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     }
   }
 
-  void _completeProfile(context) async {
+  void _completeProfile(context, value) async {
     try {
       setState(() {
         _isLoading = true;
       });
 
-      if (_completeProfileFormKey.currentState!.validate()) {
-        final birthDate = _birthDateController.text;
-        final bio = _bioController.text;
-        final fullPhoneNumber =
-            '$_selectedCountryCode${_phoneNumberController.text}';
+      if (_birthDateController.text.isEmpty &&
+          _phoneNumberController.text.isEmpty &&
+          _bioController.text.isEmpty &&
+          _gender == null &&
+          _profileImage == null) {
+        AppUtils.showToast(context, 'No data to save, skipping...', 'info');
+        await _authController.skipCompleteProfile(context);
+        AppUtils.navigateWithSlideAndClearStack(context, const MainScreen());
+        return;
+      }
 
-        Profile profile = Profile(
-            birthDate: birthDate,
-            bio: bio,
-            phoneNumber: fullPhoneNumber,
-            gender: _gender,
-            profilePicture: null,
-            isProfileComplete: true,
-            skipIsProfileComplete: true);
-        await _authController.completeProfile(profile, _profileImage);
+      Profile profile = Profile(
+        birthDate: null,
+        bio: null,
+        phoneNumber: null,
+        gender: null,
+        profilePicture: null,
+        isProfileComplete: true,
+        skipIsProfileComplete: false,
+      );
+
+      if (_birthDateController.text.isNotEmpty) {
+        profile.birthDate = _birthDateController.text;
+      }
+
+      if (_bioController.text.isNotEmpty) {
+        profile.bio = _bioController.text;
+      }
+
+      if (_phoneNumberController.text.isNotEmpty) {
+        profile.phoneNumber =
+            '$_selectedCountryCode${_phoneNumberController.text}';
+      }
+
+      if (_gender != null) {
+        profile.gender = _gender;
+      }
+
+      if (_completeProfileFormKey.currentState!.validate()) {
+        await _authController.completeProfile(context, profile, _profileImage);
+        AppUtils.showToast(context, _authController.getMessage()!, 'success');
+        AppUtils.navigateWithFade(context, const MainScreen());
       }
     } catch (error) {
       AppUtils.showToast(context, _authController.getError()!, 'error');
@@ -167,6 +189,38 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _profileImage != null
+                                ? Container(
+                                    width: 100,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                        image: FileImage(_profileImage!),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  )
+                                : const Icon(
+                                    Icons.account_circle,
+                                    size: 100,
+                                    color: Colors.grey,
+                                  ),
+                            TextButton.icon(
+                              onPressed: _pickImage,
+                              icon: const Icon(Icons.image_outlined),
+                              label: const Text("Upload Profile Picture"),
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 20),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
                         TextFormField(
                           controller: _birthDateController,
                           readOnly: true,
@@ -178,7 +232,36 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                           ),
                         ),
                         const SizedBox(height: 20),
+                        IntlPhoneField(
+                          controller: _phoneNumberController,
+                          decoration: const InputDecoration(
+                            labelText: 'Phone Number',
+                            border: OutlineInputBorder(),
+                          ),
+                          initialCountryCode: 'TN',
+                          onCountryChanged: (country) {
+                            setState(() {
+                              _selectedCountryCode = '+${country.dialCode}';
+                            });
+                          },
+                          /* onChanged: (phone) {
+                            
+                          },
+                           */
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: _bioController,
+                          maxLines: 5,
+                          decoration: const InputDecoration(
+                            labelText: 'Bio',
+                            border: OutlineInputBorder(),
+                            alignLabelWithHint: true,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Text("Gender:"),
                             Radio<String>(
@@ -203,96 +286,54 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                             const Text("female"),
                           ],
                         ),
-                        const SizedBox(height: 20),
-                        IntlPhoneField(
-                          controller: _phoneNumberController,
-                          decoration: const InputDecoration(
-                            labelText: 'Phone Number',
-                            border: OutlineInputBorder(),
-                          ),
-                          initialCountryCode: 'TN',
-                          onCountryChanged: (country) {
-                            // Update selected country code when changed
-                            setState(() {
-                              _selectedCountryCode = '+${country.dialCode}';
-                            });
-                          },
-                          /* onChanged: (phone) {
-                            
-                          },
-                           */
-                        ),
-                        const SizedBox(height: 20),
-                        TextFormField(
-                          controller: _bioController,
-                          maxLines: 5,
-                          decoration: const InputDecoration(
-                            labelText: 'Bio',
-                            border: OutlineInputBorder(),
-                            alignLabelWithHint: true,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 40),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            _profileImage != null
-                                ? Container(
-                                    width: 100,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                        image: FileImage(_profileImage!),
-                                        fit: BoxFit.cover,
+                            ElevatedButton.icon(
+                              onPressed: _isLoading
+                                  ? null
+                                  : () => _completeProfile(context, value),
+                              icon: _isLoading
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
                                       ),
-                                    ),
-                                  )
-                                : const Icon(
-                                    Icons.account_circle,
-                                    size: 100,
-                                    color: Colors.grey,
-                                  ),
-                            TextButton.icon(
-                              onPressed: _pickImage,
-                              icon: const Icon(Icons.image_outlined),
-                              label: const Text("Upload Profile Picture"),
+                                    )
+                                  : const Icon(Icons.save_outlined),
+                              label: Text(_isLoading ? 'Saving...' : 'Save'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    const Color.fromARGB(255, 44, 2, 51),
+                                foregroundColor: Colors.white,
+                              ),
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: _isLoading
+                                  ? null
+                                  : () => _skipCompleteProfile(context),
+                              icon: _isLoading
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const Icon(Icons.skip_next_outlined),
+                              label: Text(_isLoading ? 'Skipping...' : 'Skip'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    const Color.fromARGB(179, 44, 2, 51),
+                                foregroundColor: Colors.white70,
+                              ),
                             ),
                           ],
-                        ),
-                        const SizedBox(height: 40),
-                        ElevatedButton.icon(
-                          onPressed: _isLoading
-                              ? null
-                              : () => _completeProfile(context),
-                          icon: _isLoading
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Icon(Icons.save_outlined),
-                          label: Text(_isLoading ? 'Saving...' : 'Save'),
-                        ),
-                        const SizedBox(height: 40),
-                        ElevatedButton.icon(
-                          onPressed: _isLoading
-                              ? null
-                              : () => _skipCompleteProfile(value, context),
-                          icon: _isLoading
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Icon(Icons.save_outlined),
-                          label: Text(_isLoading ? 'Skipping...' : 'Skip'),
-                        ),
+                        )
                       ],
                     ),
                   ),

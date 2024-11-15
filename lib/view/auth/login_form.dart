@@ -43,13 +43,13 @@ class _LoginFormState extends State<LoginForm> {
               '_authController.getProfile()!.isProfileComplete ${_authController.getProfile()!.isProfileComplete}');
           debugPrint(
               '_authController.getProfile()!.skipIsProfileComplete ${_authController.getProfile()!.skipIsProfileComplete}');
-
-          if (_authController.getProfile()!.isProfileComplete == false ||
+          if (_authController.getProfile()!.isProfileComplete == false &&
               _authController.getProfile()!.skipIsProfileComplete == false) {
-            AppUtils.navigateToAndClearStack(
+            AppUtils.navigateWithSlideAndClearStack(
                 context, const CompleteProfileScreen());
           } else {
-            AppUtils.navigateToAndClearStack(context, const MainScreen());
+            AppUtils.navigateWithSlideAndClearStack(
+                context, const MainScreen());
           }
         }
         if (_authController.getError() != null) {
@@ -136,6 +136,10 @@ class _LoginFormState extends State<LoginForm> {
                     )
                   : const Icon(Icons.login_outlined),
               label: Text(_isLoading ? 'Logging in...' : 'Login'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 44, 2, 51),
+                foregroundColor: Colors.white,
+              ),
             )
           ],
         ));

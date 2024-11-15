@@ -45,10 +45,6 @@ class MyApp extends StatelessWidget {
         '/auth': (context) => const AuthScreen(),
         '/complete-profile': (context) => const CompleteProfileScreen(),
       },
-      // theme: ThemeData(
-      //  colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      //  useMaterial3: true,
-      //),
     );
   }
 }
@@ -60,39 +56,3 @@ ThemeData _buildTheme(brightness) {
     textTheme: GoogleFonts.latoTextTheme(baseTheme.textTheme),
   );
 }
-
-/* class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-    // Use addPostFrameCallback to ensure context is available
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<AuthProvider>(context, listen: false).checkLoginStatus();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'EventGate',
-      theme: _buildTheme(Brightness.light),
-      home: Consumer<AuthProvider>(
-        builder: (context, value, child) {
-          return value.isAuthenticated
-              ? const MainScreen()
-              : const LandingScreen();
-        },
-      ),
-      routes: {
-        '/auth': (context) => const AuthScreen(),
-      },
-    );
-  }
-} */

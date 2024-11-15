@@ -1,5 +1,4 @@
 import 'package:eventgate_flutter/controller/auth.dart';
-import 'package:eventgate_flutter/model/token.dart';
 import 'package:eventgate_flutter/utils/app_utils.dart';
 import 'package:eventgate_flutter/utils/auth_provider.dart';
 import 'package:eventgate_flutter/view/auth_screen.dart';
@@ -16,18 +15,15 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final AuthController _authController = AuthController();
   bool _isLoading = false;
+  final String baseUrl = 'http://10.0.2.2:8000';
 
-  void _onLogout(AuthProvider value, context) async {
+  void _onLogout(context) async {
     try {
       setState(() {
         _isLoading = true;
       });
-      //await Future.delayed(const Duration(seconds: 10));
-      Token tokens = Token(
-        access: value.token!.access,
-        refresh: value.token!.refresh,
-      );
-      await _authController.logout(tokens);
+      await Future.delayed(const Duration(seconds: 2));
+      await _authController.logout(context);
       AppUtils.showToast(context, _authController.getMessage()!, 'success');
       /*
       Token tokens = Token(
@@ -44,7 +40,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       });
       _authController.setMessage(null);
       _authController.setError(null);
-      AppUtils.navigateTo(context, const AuthScreen());
+      AppUtils.navigateWithSlideAndClearStack(context, const AuthScreen());
     }
   }
 
@@ -60,7 +56,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.2),
@@ -72,10 +67,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(8),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(8),
           splashColor: color.withOpacity(0.2),
           highlightColor: color.withOpacity(0.1),
           child: Padding(
@@ -92,7 +85,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   )
                 else
-                  Icon(icon, color: color),
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: Icon(icon, color: color),
+                  ),
                 const SizedBox(width: 16),
                 Text(
                   text,
@@ -128,7 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: CircleAvatar(
                 radius: 50,
                 backgroundImage: value.profile?.profilePicture != null
-                    ? NetworkImage(value.profile!.profilePicture!)
+                    ? NetworkImage(baseUrl + value.profile!.profilePicture!)
                         as ImageProvider
                     : const AssetImage('assets/images/thumbnail.png'),
               ),
@@ -184,7 +181,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     text: 'Logout',
                     color: Colors.redAccent,
                     backgroundColor: const Color.fromARGB(255, 255, 204, 204),
-                    onTap: () => _onLogout(value, context),
+                    onTap: () => _onLogout(context),
                   ),
                 ],
               ),

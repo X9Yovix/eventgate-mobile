@@ -43,7 +43,7 @@ class _RegisterFormState extends State<RegisterForm> {
         if (_authController.getMessage() != null) {
           AppUtils.showToast(context, _authController.getMessage()!, 'success');
           _clearForm();
-          AppUtils.navigateTo(context, const AuthScreen());
+          AppUtils.navigateWithFade(context, const AuthScreen());
         }
         if (_authController.getError() != null) {
           AppUtils.showToast(context, _authController.getError()!, 'error');
@@ -194,6 +194,10 @@ class _RegisterFormState extends State<RegisterForm> {
                     )
                   : const Icon(Icons.how_to_reg_outlined),
               label: Text(_isLoading ? 'Registering...' : 'Register'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 44, 2, 51),
+                foregroundColor: Colors.white,
+              ),
             ),
           ],
         ));

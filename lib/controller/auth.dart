@@ -7,8 +7,8 @@ import 'package:eventgate_flutter/utils/auth_provider.dart';
 import 'package:flutter/material.dart';
 
 class AuthController {
-  final AuthService authService = AuthService();
   final AuthProvider authProvider = AuthProvider();
+  final AuthService authService = AuthService();
 
   User? _user;
   Profile? _profile;
@@ -71,9 +71,9 @@ class AuthController {
     }
   }
 
-  Future<void> logout(Token tokens) async {
+  Future<void> logout(context) async {
     try {
-      var response = await authService.logout(tokens.access, tokens.refresh);
+      var response = await authService.logout(context);
 
       if (response != null) {
         if (response['error'] != null) {
@@ -93,9 +93,9 @@ class AuthController {
     }
   }
 
-  Future<void> completeProfile(Profile profile, File? image) async {
+  Future<void> completeProfile(context, Profile profile, File? image) async {
     try {
-      var response = await authService.completeProfile(profile, image);
+      var response = await authService.completeProfile(context, profile, image);
 
       if (response != null) {
         if (response['error'] != null) {
@@ -114,10 +114,10 @@ class AuthController {
     }
   }
 
-  Future<void> skipCompleteProfile(Token? tokens) async {
+  Future<void> skipCompleteProfile(context) async {
     try {
       debugPrint('he: start controller');
-      var response = await authService.skipCompleteProfile(tokens);
+      var response = await authService.skipCompleteProfile(context);
       debugPrint('he: controller $response');
       if (response != null) {
         if (response['error'] != null) {
