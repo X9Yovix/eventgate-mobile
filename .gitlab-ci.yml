@@ -26,7 +26,7 @@ vulnerability-check:
     - source venv/bin/activate
     - pip install safety
   script:
-    - safety check -r ./pubspec.lock
+    - safety scan -r ./pubspec.lock
   after_script:
     - echo "Vulnerability check completed successfully"
 

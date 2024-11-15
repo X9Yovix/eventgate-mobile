@@ -14,6 +14,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
+  String _title = 'Recent Events';
 
   static const List<Widget> _widgetOptions = <Widget>[
     RecentEventsScreen(),
@@ -26,6 +27,23 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       _selectedIndex = index;
     });
+    if (index == 0) {
+      setState(() {
+        _title = 'Recent Events';
+      });
+    } else if (index == 1) {
+      setState(() {
+        _title = 'History';
+      });
+    } else if (index == 2) {
+      setState(() {
+        _title = 'Manage Events';
+      });
+    } else if (index == 3) {
+      setState(() {
+        _title = 'Settings';
+      });
+    }
   }
 
   @override
@@ -33,7 +51,7 @@ class _MainScreenState extends State<MainScreen> {
     return Consumer<AuthProvider>(
         builder: (context, value, child) => Scaffold(
               appBar: AppBar(
-                title: const Text('Event Gate'),
+                title: Text(_title),
               ),
               body: Center(
                 child: _widgetOptions.elementAt(_selectedIndex),
