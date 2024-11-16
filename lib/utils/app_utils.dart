@@ -63,6 +63,23 @@ class AppUtils {
     );
   }
 
+  static void navigateWithFadeAndClearStack(
+      BuildContext context, Widget homePage) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => homePage,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+      ),
+      (Route<dynamic> route) => false,
+    );
+  }
+
   static void navigateWithSlideAndClearStack(
       BuildContext context, Widget homePage) {
     Navigator.pushAndRemoveUntil(

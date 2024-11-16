@@ -2,6 +2,8 @@ import 'package:eventgate_flutter/utils/auth_provider.dart';
 import 'package:eventgate_flutter/view/complete_profile_screen.dart';
 import 'package:eventgate_flutter/view/landing_screen.dart';
 import 'package:eventgate_flutter/view/auth_screen.dart';
+import 'package:eventgate_flutter/view/main/manage_events/add/add_event_screen.dart';
+import 'package:eventgate_flutter/view/main/manage_events/my_events/my_events_screen.dart';
 import 'package:eventgate_flutter/view/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -44,6 +46,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/auth': (context) => const AuthScreen(),
         '/complete-profile': (context) => const CompleteProfileScreen(),
+        '/manage-events/add': (context) => const AddEventScreen(),
+        '/manage-events/my-events': (context) => const MyEventsScreen(),
       },
     );
   }

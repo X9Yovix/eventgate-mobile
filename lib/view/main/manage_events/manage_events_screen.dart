@@ -1,7 +1,18 @@
+import 'package:eventgate_flutter/utils/app_utils.dart';
+import 'package:eventgate_flutter/view/main/manage_events/add/add_event_screen.dart';
+import 'package:eventgate_flutter/view/main/manage_events/my_events/my_events_screen.dart';
 import 'package:flutter/material.dart';
 
 class ManageEventsScreen extends StatelessWidget {
   const ManageEventsScreen({super.key});
+
+  void _navigateToAddEvent(BuildContext context, String section) {
+    if (section == "add") {
+      AppUtils.navigateWithFade(context, const AddEventScreen());
+    } else if (section == "my-events") {
+      AppUtils.navigateWithFade(context, const MyEventsScreen());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +28,7 @@ class ManageEventsScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15),
               ),
               child: InkWell(
-                onTap: () {
-                  debugPrint("Test");
-                },
+                onTap: () => _navigateToAddEvent(context, 'my-events'),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: Column(
@@ -45,7 +54,7 @@ class ManageEventsScreen extends StatelessWidget {
                             ),
                             SizedBox(height: 8),
                             Text(
-                              'Tap to view and manage your events.',
+                              'Tap to view and manage your events',
                               style: TextStyle(
                                 color: Colors.grey,
                               ),
@@ -66,9 +75,7 @@ class ManageEventsScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: InkWell(
-                  onTap: () {
-                    debugPrint("Test");
-                  },
+                  onTap: () => _navigateToAddEvent(context, 'add'),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
                     child: Column(
@@ -94,7 +101,7 @@ class ManageEventsScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 8),
                               Text(
-                                'Tap to create a new event.',
+                                'Tap to create a new event',
                                 style: TextStyle(
                                   color: Colors.grey,
                                 ),
