@@ -59,20 +59,18 @@ class LandingScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        AppUtils.navigateWithFade(context, const AuthScreen());
+                    ElevatedButton.icon(
+                      onPressed: () => {
+                        AppUtils.navigateWithFade(context, const AuthScreen())
                       },
+                      iconAlignment: IconAlignment.start,
+                      icon: const Icon(Icons.flag_outlined),
+                      label: const Text('Get Started'),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                        backgroundColor: const Color.fromARGB(255, 44, 2, 51),
+                        foregroundColor: Colors.white,
                       ),
-                      child: const Text("Get Started"),
                     ),
-                    const SizedBox(height: 20),
                   ],
                 ),
               ),

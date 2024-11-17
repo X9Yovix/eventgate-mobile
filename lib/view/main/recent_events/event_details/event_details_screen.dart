@@ -88,9 +88,9 @@ class _EventDetailsState extends State<EventDetailsScreen> {
   }
 
   Widget _buildEventDetails() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: ListView(
         children: [
           _buildImageCarousel(),
           _buildInfoSection(),
@@ -182,7 +182,7 @@ class _EventDetailsState extends State<EventDetailsScreen> {
                   const Icon(Icons.access_time, color: Colors.orange),
                   const SizedBox(width: 8),
                   Text(
-                    'From ${_event!.startTime} to ${_event!.endTime}',
+                    'From ${_event!.startTime.substring(0, 5)} to ${_event!.endTime.substring(0, 5)}',
                     style: const TextStyle(fontSize: 16, color: Colors.black54),
                   ),
                 ],
@@ -258,7 +258,7 @@ class _EventDetailsState extends State<EventDetailsScreen> {
 
   Widget _buildJoinButton() {
     return ElevatedButton.icon(
-      onPressed: () => _submitForm(context),
+      onPressed: () => _joinEvent(context),
       iconAlignment: IconAlignment.start,
       icon: _isLoading
           ? const SizedBox(
@@ -278,7 +278,7 @@ class _EventDetailsState extends State<EventDetailsScreen> {
     );
   }
 
-  Future<void> _submitForm(context) async {
+  Future<void> _joinEvent(context) async {
     try {
       setState(() {
         _isLoading = true;

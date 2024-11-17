@@ -403,6 +403,13 @@ class _AddEventScreenState extends State<AddEventScreen> {
       PermissionStatus permission =
           await Permission.locationWhenInUse.request();
       if (permission.isGranted) {
+        bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+        if (!serviceEnabled) {
+          AppUtils.showToast(context,
+              'Location service is disabled, enable it to continue', 'error');
+          return;
+        }
+
         try {
           Position position = await Geolocator.getCurrentPosition(
             locationSettings: const LocationSettings(
