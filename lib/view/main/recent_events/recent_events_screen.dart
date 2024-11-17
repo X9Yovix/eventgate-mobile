@@ -1,5 +1,6 @@
 import 'package:eventgate_flutter/controller/event.dart';
 import 'package:eventgate_flutter/utils/app_utils.dart';
+import 'package:eventgate_flutter/view/main/recent_events/event_details/event_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -85,6 +86,16 @@ class _RecentEventsState extends State<RecentEventsScreen> {
     }
   }
 
+  void __navigateToEventDetails(int id) {
+    /* Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EventDetailsScreen(id: event['id'] as int),
+      ),
+    ); */
+    AppUtils.navigateWithFadeAndArgs(context, EventDetailsScreen(id: id));
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -159,7 +170,7 @@ class _RecentEventsState extends State<RecentEventsScreen> {
                 Text(
                   event['event_name'],
                   style: const TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
@@ -187,7 +198,7 @@ class _RecentEventsState extends State<RecentEventsScreen> {
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Center(
               child: ElevatedButton.icon(
-                onPressed: () => {},
+                onPressed: () => __navigateToEventDetails(event['id']),
                 icon: const Icon(Icons.visibility_outlined),
                 label: const Text(
                   'View Event',

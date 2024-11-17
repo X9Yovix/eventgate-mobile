@@ -98,4 +98,43 @@ class EventController {
     }
     return {};
   }
+
+  Future<Map<String, dynamic>> getEvent(BuildContext context, int id) async {
+    try {
+      var response = await eventsService.getEvent(context, id);
+
+      if (response != null) {
+        if (response['error'] != null) {
+          _error = response['error'];
+          return {};
+        }
+
+        if (response['data'] != null) {
+          return response['data'];
+        }
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
+      _error = 'Internal server error';
+    }
+    return {};
+  }
+
+  Future<String> getPlaceName(double latitude, double longitude) async {
+    try {
+      String placeName = await eventsService.getPlaceName(latitude, longitude);
+
+      if (placeName == 'Unknown location' ||
+          placeName == 'Failed to fetch location') {
+        _error = 'Could not fetch place name';
+        return placeName;
+      }
+
+      return placeName;
+    } catch (e) {
+      debugPrint('Error in getPlaceName: $e');
+      _error = 'Internal server error';
+      return 'Failed to fetch location';
+    }
+  }
 }

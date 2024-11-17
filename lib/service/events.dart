@@ -127,4 +127,45 @@ class EventsService {
       );
     }
   }
+
+  Future<Map<String, dynamic>?> getEvent(BuildContext context, int id) async {
+    Token? token = _getTokenFromProvider(context);
+    if (token == null) {
+      return {'error': 'Token is null'};
+    }
+
+    final headers = {
+      'Authorization': 'Bearer ${token.access}',
+    };
+    final url = Uri.parse('$baseUrl/?id=$id');
+    final response = await http.get(url, headers: headers);
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return {'data': data};
+    } else if (response.statusCode == 400) {
+      debugPrint(data['error']);
+      return {'error': data['error']};
+    } else {
+      throw Exception(
+        'Failed to fetch event: ${response.statusCode}, ${response.body}',
+      );
+    }
+  }
+
+  Future<String> getPlaceName(double latitude, double longitude) async {
+    final url =
+        'https://nominatim.openstreetmap.org/reverse?format=json&lat=$latitude&lon=$longitude';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['display_name'] ?? 'Unknown location';
+      }
+      return 'Unknown location';
+    } catch (e) {
+      return 'Failed to fetch location';
+    }
+  }
 }

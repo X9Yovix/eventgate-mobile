@@ -175,4 +175,21 @@ class AppUtils {
         "${_monthToString(date.month)} "
         "${date.year}";
   }
+
+  static void navigateWithFadeAndArgs(BuildContext context, Widget page,
+      {Object? arguments}) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => page,
+        settings: RouteSettings(arguments: arguments),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+      ),
+    );
+  }
 }
