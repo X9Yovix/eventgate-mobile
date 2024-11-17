@@ -105,4 +105,74 @@ class AppUtils {
       (Route<dynamic> route) => false,
     );
   }
+
+  static String formatStringDate(String dateString) {
+    DateTime date = DateTime.parse(dateString);
+    return formatDateWithDay(date);
+  }
+
+  /* static String formatDate(DateTime date) {
+    return "${date.day.toString().padLeft(2, '0')} "
+        "${_monthToString(date.month)} "
+        "${date.year}";
+  } */
+
+  static String _monthToString(int month) {
+    switch (month) {
+      case 1:
+        return "January";
+      case 2:
+        return "February";
+      case 3:
+        return "March";
+      case 4:
+        return "April";
+      case 5:
+        return "May";
+      case 6:
+        return "June";
+      case 7:
+        return "July";
+      case 8:
+        return "August";
+      case 9:
+        return "September";
+      case 10:
+        return "October";
+      case 11:
+        return "November";
+      case 12:
+        return "December";
+      default:
+        return "";
+    }
+  }
+
+  static String _dayOfWeekToString(int day) {
+    switch (day) {
+      case DateTime.monday:
+        return "Monday";
+      case DateTime.tuesday:
+        return "Tuesday";
+      case DateTime.wednesday:
+        return "Wednesday";
+      case DateTime.thursday:
+        return "Thursday";
+      case DateTime.friday:
+        return "Friday";
+      case DateTime.saturday:
+        return "Saturday";
+      case DateTime.sunday:
+        return "Sunday";
+      default:
+        return "";
+    }
+  }
+
+  static String formatDateWithDay(DateTime date) {
+    return "${_dayOfWeekToString(date.weekday)}, "
+        "${date.day.toString().padLeft(2, '0')} "
+        "${_monthToString(date.month)} "
+        "${date.year}";
+  }
 }

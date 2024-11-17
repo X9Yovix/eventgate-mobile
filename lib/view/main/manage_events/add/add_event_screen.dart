@@ -69,11 +69,15 @@ class _AddEventScreenState extends State<AddEventScreen> {
         _allTags = tags;
       });
     } catch (error) {
-      AppUtils.showToast(context, eventController.getError()!, 'error');
+      if (mounted) {
+        AppUtils.showToast(context, eventController.getError()!, 'error');
+      }
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -85,7 +89,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Form(
                 key: _addEventFormKey,
                 child: ListView(
@@ -94,7 +98,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                     const SizedBox(height: 16),
                     _buildTagField(),
                     Wrap(
-                      spacing: 8.0,
+                      spacing: 8,
                       children: _selectedTags
                           .map((tag) => Chip(
                                 label: Text(tag),
@@ -131,7 +135,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
   Widget _buildNameField() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
         key: _nameFieldKey,
         onChanged: (value) => _nameFieldKey.currentState?.validate(),
@@ -220,7 +224,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
   Widget _buildDateField(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
         key: _dateFieldKey,
         controller: _dateController,
@@ -255,7 +259,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   Widget _buildTimeField(String label, TextEditingController controller,
       Future<void> Function() onTap) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
         key: label == 'Start Time' ? _startTimeFieldKey : _endTimeFieldKey,
         controller: controller,
@@ -346,10 +350,10 @@ class _AddEventScreenState extends State<AddEventScreen> {
                     userAgentPackageName: 'com.tekup.eventgate_flutter',
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8),
                     child: Container(
-                      width: 40.0,
-                      height: 40.0,
+                      width: 40,
+                      height: 40,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Color.fromARGB(158, 44, 2, 51),
@@ -370,8 +374,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
                     MarkerLayer(
                       markers: [
                         Marker(
-                          width: 30.0,
-                          height: 30.0,
+                          width: 30,
+                          height: 30,
                           point: _selectedLocation!,
                           child: const Icon(
                             Icons.location_on,

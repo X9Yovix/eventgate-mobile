@@ -69,4 +69,33 @@ class EventController {
       debugPrint('Error: $error');
     }
   }
+
+  Future<Map<String, dynamic>> getRecentEvents(
+    BuildContext context, {
+    int page = 1,
+    int pageSize = 5,
+  }) async {
+    try {
+      var response = await eventsService.getRecentEvents(
+        context,
+        page: page,
+        pageSize: pageSize,
+      );
+
+      if (response != null) {
+        if (response['error'] != null) {
+          _error = response['error'];
+          return {};
+        }
+
+        if (response['data'] != null) {
+          return response['data'];
+        }
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
+      _error = 'Internal server error';
+    }
+    return {};
+  }
 }

@@ -14,7 +14,7 @@ class EventsService {
     return authProvider.token;
   }
 
-  Future<Map<String, dynamic>?> getTags(context) async {
+  Future<Map<String, dynamic>?> getTags(BuildContext context) async {
     Token? token = _getTokenFromProvider(context);
     if (token == null) {
       return {'error': 'Token is null'};
@@ -95,6 +95,36 @@ class EventsService {
       return {'error': data['error']};
     } else {
       throw Exception('Failed to add event: ${response.statusCode}');
+    }
+  }
+
+  Future<Map<String, dynamic>?> getRecentEvents(
+    BuildContext context, {
+    required int page,
+    required int pageSize,
+  }) async {
+    Token? token = _getTokenFromProvider(context);
+    if (token == null) {
+      return {'error': 'Token is null'};
+    }
+
+    final url = Uri.parse('$baseUrl/recent?page=$page&page_size=$pageSize');
+    final headers = {
+      'Authorization': 'Bearer ${token.access}',
+    };
+
+    final response = await http.get(url, headers: headers);
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return {'data': data};
+    } else if (response.statusCode == 400) {
+      debugPrint(data['error']);
+      return {'error': data['error']};
+    } else {
+      throw Exception(
+        'Failed to fetch recent events: ${response.statusCode}, ${response.body}',
+      );
     }
   }
 }

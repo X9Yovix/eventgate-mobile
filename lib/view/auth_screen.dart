@@ -26,7 +26,7 @@ class _AuthScreenState extends State<AuthScreen> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             SegmentedButton<AuthTabs>(

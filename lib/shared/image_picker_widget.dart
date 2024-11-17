@@ -58,7 +58,7 @@ class ImagePickerWidget extends StatelessWidget {
                   (entry) => Stack(
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
+                        borderRadius: BorderRadius.circular(8),
                         child: Image.file(
                           entry.value,
                           width: 100,
