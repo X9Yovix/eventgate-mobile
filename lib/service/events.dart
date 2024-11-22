@@ -7,7 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class EventsService {
-  final String baseUrl = 'http://10.0.2.2:8000/api/events';
+  final String baseUrlEvent = 'http://10.0.2.2:8000/api/events';
+  final String baseUrlRegister = 'http://10.0.2.2:8000/api/register';
 
   Token? _getTokenFromProvider(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -19,7 +20,7 @@ class EventsService {
     if (token == null) {
       return {'error': 'Token is null'};
     }
-    final url = Uri.parse('$baseUrl/tags');
+    final url = Uri.parse('$baseUrlEvent/tags');
     final headers = {
       'Authorization': 'Bearer ${token.access}',
     };
@@ -57,7 +58,7 @@ class EventsService {
       return {'error': 'Token is null'};
     }
 
-    final url = Uri.parse('$baseUrl/add');
+    final url = Uri.parse('$baseUrlEvent/add');
     final headers = {
       'Authorization': 'Bearer ${token.access}',
     };
@@ -108,7 +109,8 @@ class EventsService {
       return {'error': 'Token is null'};
     }
 
-    final url = Uri.parse('$baseUrl/recent?page=$page&page_size=$pageSize');
+    final url =
+        Uri.parse('$baseUrlEvent/recent?page=$page&page_size=$pageSize');
     final headers = {
       'Authorization': 'Bearer ${token.access}',
     };
@@ -137,7 +139,7 @@ class EventsService {
     final headers = {
       'Authorization': 'Bearer ${token.access}',
     };
-    final url = Uri.parse('$baseUrl/?id=$id');
+    final url = Uri.parse('$baseUrlEvent/?id=$id');
     final response = await http.get(url, headers: headers);
     final data = jsonDecode(response.body);
 
@@ -166,6 +168,134 @@ class EventsService {
       return 'Unknown location';
     } catch (e) {
       return 'Failed to fetch location';
+    }
+  }
+
+  Future<Map<String, dynamic>?> markInterested(
+      BuildContext context, int eventId) async {
+    Token? token = _getTokenFromProvider(context);
+    if (token == null) {
+      return {'error': 'Token is null'};
+    }
+
+    final headers = {
+      'Authorization': 'Bearer ${token.access}',
+    };
+    final url = Uri.parse('$baseUrlRegister/interested?event_id=$eventId');
+    final response = await http.post(url, headers: headers);
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 201) {
+      return {'data': data};
+    } else if (response.statusCode == 400) {
+      debugPrint(data['error']);
+      return {'error': data['error']};
+    } else {
+      throw Exception(
+        'Failed: ${response.statusCode}, ${response.body}',
+      );
+    }
+  }
+
+  Future<Map<String, dynamic>?> requestToJoin(
+      BuildContext context, int eventId) async {
+    Token? token = _getTokenFromProvider(context);
+    if (token == null) {
+      return {'error': 'Token is null'};
+    }
+
+    final headers = {
+      'Authorization': 'Bearer ${token.access}',
+    };
+    final url = Uri.parse('$baseUrlRegister/request?event_id=$eventId');
+    final response = await http.post(url, headers: headers);
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 201) {
+      return {'data': data};
+    } else if (response.statusCode == 400) {
+      debugPrint(data['error']);
+      return {'error': data['error']};
+    } else {
+      throw Exception(
+        'Failed: ${response.statusCode}, ${response.body}',
+      );
+    }
+  }
+
+  Future<Map<String, dynamic>?> checkUserEventStatus(
+      BuildContext context, int eventId) async {
+    Token? token = _getTokenFromProvider(context);
+    if (token == null) {
+      return {'error': 'Token is null'};
+    }
+
+    final headers = {
+      'Authorization': 'Bearer ${token.access}',
+    };
+    final url = Uri.parse('$baseUrlRegister/event/status?event_id=$eventId');
+    final response = await http.get(url, headers: headers);
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return {'data': data};
+    } else if (response.statusCode == 400) {
+      debugPrint(data['error']);
+      return {'error': data['error']};
+    } else {
+      throw Exception(
+        'Failed: ${response.statusCode}, ${response.body}',
+      );
+    }
+  }
+
+  Future<Map<String, dynamic>?> removeInterest(
+      BuildContext context, int eventId) async {
+    Token? token = _getTokenFromProvider(context);
+    if (token == null) return {'error': 'Token is null'};
+
+    final headers = {
+      'Authorization': 'Bearer ${token.access}',
+    };
+    final url = Uri.parse('$baseUrlRegister/interested/remove?event_id=$eventId');
+    final response = await http.delete(url, headers: headers);
+
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return {'data': data};
+    } else if (response.statusCode == 400) {
+      debugPrint(data['error']);
+      return {'error': data['error']};
+    } else {
+      throw Exception(
+        'Failed: ${response.statusCode}, ${response.body}',
+      );
+    }
+  }
+
+  Future<Map<String, dynamic>?> cancelRequest(
+      BuildContext context, int eventId) async {
+    Token? token = _getTokenFromProvider(context);
+    if (token == null) return {'error': 'Token is null'};
+
+    final headers = {
+      'Authorization': 'Bearer ${token.access}',
+    };
+    final url = Uri.parse('$baseUrlRegister/request/cancel?event_id=$eventId');
+    final response = await http.delete(url, headers: headers);
+
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return {'data': data};
+    } else if (response.statusCode == 400) {
+      debugPrint(data['error']);
+      return {'error': data['error']};
+    } else {
+      throw Exception(
+        'Failed: ${response.statusCode}, ${response.body}',
+      );
     }
   }
 }

@@ -51,7 +51,8 @@ class LandingScreen extends StatelessWidget {
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
-                        "EventGate is a platform that allows you to create, find, and manage events. You can create events, invite people, and manage the event details.",
+                        "EventGate is a platform designed to help you create, discover, and manage events effortlessly.",
+                        textAlign: TextAlign.justify,
                         style: TextStyle(
                           color: Color.fromARGB(255, 128, 128, 128),
                           fontSize: 16,
@@ -61,7 +62,7 @@ class LandingScreen extends StatelessWidget {
                     const SizedBox(height: 20),
                     ElevatedButton.icon(
                       onPressed: () => {
-                        AppUtils.navigateWithFade(context, const AuthScreen())
+                        AppUtils.navigateWithFadeAndClearStack(context, const AuthScreen())
                       },
                       iconAlignment: IconAlignment.start,
                       icon: const Icon(Icons.flag_outlined),

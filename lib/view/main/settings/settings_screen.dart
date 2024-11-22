@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eventgate_flutter/controller/auth.dart';
 import 'package:eventgate_flutter/utils/app_utils.dart';
 import 'package:eventgate_flutter/utils/auth_provider.dart';
@@ -22,7 +23,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       setState(() {
         _isLoading = true;
       });
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 1));
       await _authController.logout(context);
       AppUtils.showToast(context, _authController.getMessage()!, 'success');
       /*
@@ -122,12 +123,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ],
               ),
-              child: CircleAvatar(
-                radius: 50,
-                backgroundImage: value.profile?.profilePicture != null
-                    ? NetworkImage(baseUrl + value.profile!.profilePicture!)
-                        as ImageProvider
-                    : const AssetImage('assets/images/thumbnail.png'),
+              child: ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: baseUrl + value.profile!.profilePicture!,
+                  fit: BoxFit.cover,
+                  width:
+                      100,
+                  height: 100,
+                  placeholder: (context, url) => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  errorWidget: (context, url, error) =>
+                      const Center(child: Icon(Icons.error, color: Colors.red)),
+                ),
               ),
             ),
             const SizedBox(height: 16),

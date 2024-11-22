@@ -23,6 +23,8 @@ class _EventDetailsState extends State<EventDetailsScreen> {
   bool _isLoading = false;
   final String baseUrl = 'http://10.0.2.2:8000';
 
+  Map<String, dynamic>? _userStatus;
+
   @override
   void initState() {
     super.initState();
@@ -34,6 +36,23 @@ class _EventDetailsState extends State<EventDetailsScreen> {
     _event = null;
     _placeName = 'Fetching location...';
     super.dispose();
+  }
+
+  Future<void> _fetchUserStatus() async {
+    try {
+      final status =
+          await eventController.checkUserEventStatus(context, widget.id);
+
+      if (status != null) {
+        setState(() {
+          _userStatus = status;
+        });
+      }
+    } catch (error) {
+      if (mounted) {
+        AppUtils.showToast(context, eventController.getError()!, 'error');
+      }
+    }
   }
 
   Future<void> _fetchEvent() async {
@@ -58,6 +77,7 @@ class _EventDetailsState extends State<EventDetailsScreen> {
           setState(() {
             _placeName = placeName;
           });
+          await _fetchUserStatus();
         }
       }
     } catch (error) {
@@ -96,7 +116,7 @@ class _EventDetailsState extends State<EventDetailsScreen> {
           _buildInfoSection(),
           _buildMapSection(),
           const SizedBox(height: 20),
-          _buildJoinButton(),
+          _buildButtonsSection(),
         ],
       ),
     );
@@ -256,44 +276,160 @@ class _EventDetailsState extends State<EventDetailsScreen> {
           );
   }
 
-  Widget _buildJoinButton() {
-    return ElevatedButton.icon(
-      onPressed: () => _joinEvent(context),
-      iconAlignment: IconAlignment.start,
-      icon: _isLoading
-          ? const SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 2,
-              ),
-            )
-          : const Icon(Icons.add),
-      label: Text(_isLoading ? 'Joining event...' : 'Join event'),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color.fromARGB(255, 44, 2, 51),
-        foregroundColor: Colors.white,
-      ),
+  Widget _buildButtonsSection() {
+    bool isInterested = _userStatus?['is_interested'] ?? false;
+    String? joinStatus = _userStatus?['join_status'];
+    bool canCancel = _userStatus?['can_cancel'] ?? false;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        ElevatedButton.icon(
+          onPressed: isInterested
+              ? () => _removeInterest(context)
+              : () => _markInterested(context),
+          icon: _isLoading
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+              : Icon(isInterested ? Icons.favorite : Icons.favorite_outline),
+          label: Text(isInterested ? 'Remove Interest' : 'Interested'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isInterested ? Colors.red : Colors.white,
+            foregroundColor: isInterested
+                ? Colors.white
+                : const Color.fromARGB(255, 44, 2, 51),
+            //side: const BorderSide(color: Color.fromARGB(255, 44, 2, 51)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+        ElevatedButton.icon(
+          onPressed: joinStatus == 'PENDING'
+              ? canCancel
+                  ? () => _cancelRequest(context)
+                  : null
+              : () => _requestToJoin(context),
+          icon: _isLoading
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+              : const Icon(Icons.add),
+          label: Text(joinStatus == 'PENDING'
+              ? 'Pending'
+              : _isLoading
+                  ? 'Requesting to join...'
+                  : 'Join'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: joinStatus == 'PENDING'
+                ? Colors.orange
+                : const Color.fromARGB(255, 44, 2, 51),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
-  Future<void> _joinEvent(context) async {
+  Future<void> _markInterested(BuildContext context) async {
     try {
       setState(() {
         _isLoading = true;
       });
 
-      //await eventController.joinEvent(context, widget.id);
+      await eventController.markInterested(context, widget.id);
+      await _fetchUserStatus();
+
       if (eventController.getMessage() != null) {
         AppUtils.showToast(context, eventController.getMessage()!, 'success');
-        //AppUtils.navigateWithFade(context, const ());
-      }
-      if (eventController.getError() != null) {
+      } else if (eventController.getError() != null) {
         AppUtils.showToast(context, eventController.getError()!, 'error');
       }
-    } catch (error) {
-      AppUtils.showToast(context, eventController.getError()!, 'error');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+      eventController.setMessage(null);
+      eventController.setError(null);
+    }
+  }
+
+  Future<void> _requestToJoin(BuildContext context) async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+
+      await eventController.requestToJoin(context, widget.id);
+      await _fetchUserStatus();
+
+      if (eventController.getMessage() != null) {
+        AppUtils.showToast(context, eventController.getMessage()!, 'success');
+      } else if (eventController.getError() != null) {
+        AppUtils.showToast(context, eventController.getError()!, 'error');
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+      eventController.setMessage(null);
+      eventController.setError(null);
+    }
+  }
+
+  Future<void> _removeInterest(BuildContext context) async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+
+      await eventController.removeInterest(context, widget.id);
+      await _fetchUserStatus();
+
+      if (eventController.getMessage() != null) {
+        AppUtils.showToast(context, eventController.getMessage()!, 'success');
+        _fetchUserStatus(); // Refresh user status after removing interest
+      } else if (eventController.getError() != null) {
+        AppUtils.showToast(context, eventController.getError()!, 'error');
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+      eventController.setMessage(null);
+      eventController.setError(null);
+    }
+  }
+
+  Future<void> _cancelRequest(BuildContext context) async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+
+      await eventController.cancelRequest(context, widget.id);
+      await _fetchUserStatus();
+
+      if (eventController.getMessage() != null) {
+        AppUtils.showToast(context, eventController.getMessage()!, 'success');
+        _fetchUserStatus();
+      } else if (eventController.getError() != null) {
+        AppUtils.showToast(context, eventController.getError()!, 'error');
+      }
     } finally {
       setState(() {
         _isLoading = false;

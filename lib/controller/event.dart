@@ -137,4 +137,100 @@ class EventController {
       return 'Failed to fetch location';
     }
   }
+
+  Future<void> markInterested(BuildContext context, int eventId) async {
+    try {
+      final response = await eventsService.markInterested(context, eventId);
+
+      if (response != null) {
+        if (response['error'] != null) {
+          _error = response['error'];
+          return;
+        }
+
+        if (response['data'] != null) {
+          await authProvider.logout();
+          _message = response['data']['message'];
+          return;
+        }
+      }
+    } catch (error) {
+      setError('Error: $error');
+      debugPrint('Error: $error');
+    }
+  }
+
+  Future<void> requestToJoin(BuildContext context, int eventId) async {
+    try {
+      final response = await eventsService.requestToJoin(context, eventId);
+
+      if (response != null) {
+        if (response['error'] != null) {
+          _error = response['error'];
+          return;
+        }
+
+        if (response['data'] != null) {
+          await authProvider.logout();
+          _message = response['data']['message'];
+          return;
+        }
+      }
+    } catch (error) {
+      setError('Error: $error');
+      debugPrint('Error: $error');
+    }
+  }
+
+  Future<Map<String, dynamic>?> checkUserEventStatus(
+      BuildContext context, int eventId) async {
+    try {
+      final response =
+          await eventsService.checkUserEventStatus(context, eventId);
+
+      if (response != null) {
+        if (response['error'] != null) {
+          _error = response['error'];
+          return null;
+        }
+        return response['data'];
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
+      _error = 'Internal server error';
+    }
+    return null;
+  }
+
+  Future<void> removeInterest(BuildContext context, int eventId) async {
+    try {
+      final response = await eventsService.removeInterest(context, eventId);
+      if (response != null) {
+        if (response['error'] != null) {
+          setError(response['error']);
+          return;
+        }
+        setMessage('Interest removed successfully.');
+      }
+    } catch (error) {
+      setError('Error: $error');
+      debugPrint('Error: $error');
+    }
+  }
+
+  Future<void> cancelRequest(BuildContext context, int eventId) async {
+    try {
+      final response = await eventsService.cancelRequest(context, eventId);
+      if (response != null) {
+        if (response['error'] != null) {
+          setError(response['error']);
+          return;
+        }
+        setMessage('Request canceled successfully.');
+      }
+    } catch (error) {
+      setError('Error: $error');
+      debugPrint('Error: $error');
+    }
+  }
 }
