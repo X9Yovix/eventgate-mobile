@@ -1,17 +1,20 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:eventgate_flutter/model/token.dart';
-import 'package:eventgate_flutter/model/user.dart';
-import 'package:eventgate_flutter/utils/auth_provider.dart';
+import 'package:eventgate_flutter/model/user.dart' as app_user;
+import 'package:eventgate_flutter/utils/auth_provider.dart'
+    as app_auth_provider;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
   final String baseUrl = 'http://10.0.2.2:8000/api/profiles';
 
   Token? _getTokenFromProvider(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final authProvider =
+        Provider.of<app_auth_provider.AuthProvider>(context, listen: false);
     return authProvider.token;
   }
 
@@ -36,7 +39,18 @@ class AuthService {
     }
   }
 
-  Future<Map<String, dynamic>?> register(User user, String password) async {
+  Future<void> authenticateWithFirebase(String firebaseToken) async {
+    try {
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
+      debugPrint('userCredential: $userCredential');
+    } catch (e) {
+      debugPrint('error authenticating with Firebase: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>?> register(
+      app_user.User user, String password) async {
     final url = Uri.parse('$baseUrl/register');
     final response = await http.post(
       url,
@@ -94,7 +108,7 @@ class AuthService {
   }
 
   Future<Map<String, dynamic>?> completeProfile(
-      context, Profile profile, File? image) async {
+      context, app_user.Profile profile, File? image) async {
     Token? token = _getTokenFromProvider(context);
     if (token == null) {
       return {'error': 'Token is null'};

@@ -69,79 +69,91 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-        key: _loginFormKey,
-        child: Column(
-          children: [
-            SizedBox(
-                width: 300,
-                child: TextFormField(
-                  enabled: !_isLoading,
-                  controller: _usernameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Username',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.perm_identity_outlined),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your username';
-                    }
-                    return null;
-                  },
-                )),
-            const SizedBox(height: 20),
-            SizedBox(
-                width: 300,
-                child: TextFormField(
-                  enabled: !_isLoading,
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    border: const OutlineInputBorder(),
-                    prefixIcon: const Icon(Icons.password_outlined),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
-                    ),
-                  ),
-                  obscureText: _isPasswordVisible ? false : true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    return null;
-                  },
-                )),
-            const SizedBox(height: 40),
-            ElevatedButton.icon(
-              onPressed: _isLoading ? null : () => _login(context),
-              iconAlignment: IconAlignment.start,
-              icon: _isLoading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : const Icon(Icons.login_outlined),
-              label: Text(_isLoading ? 'Logging in...' : 'Login'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 44, 2, 51),
-                foregroundColor: Colors.white,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(5),
+        child: Form(
+          key: _loginFormKey,
+          child: Column(
+            children: [
+              Image.asset(
+                'assets/images/login.png',
+                width: 250,
+                height: 250,
               ),
-            )
-          ],
-        ));
+              const SizedBox(height: 10),
+              SizedBox(
+                  width: 300,
+                  child: TextFormField(
+                    enabled: !_isLoading,
+                    controller: _usernameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Username',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.perm_identity_outlined),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your username';
+                      }
+                      return null;
+                    },
+                  )),
+              const SizedBox(height: 20),
+              SizedBox(
+                  width: 300,
+                  child: TextFormField(
+                    enabled: !_isLoading,
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.password_outlined),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                      ),
+                    ),
+                    obscureText: _isPasswordVisible ? false : true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password';
+                      }
+                      return null;
+                    },
+                  )),
+              const SizedBox(height: 40),
+              ElevatedButton.icon(
+                onPressed: _isLoading ? null : () => _login(context),
+                iconAlignment: IconAlignment.start,
+                icon: _isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Icon(Icons.login_outlined),
+                label: Text(_isLoading ? 'Logging in...' : 'Login'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 44, 2, 51),
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
