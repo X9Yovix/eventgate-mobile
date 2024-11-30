@@ -125,7 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               child: ClipOval(
                 child: CachedNetworkImage(
-                  imageUrl: baseUrl + value.profile!.profilePicture!,
+                  imageUrl: (value.profile!.profilePicture != null && value.profile!.profilePicture!.isNotEmpty) ? baseUrl + value.profile!.profilePicture! : 'https://placehold.co/200' ,
                   fit: BoxFit.cover,
                   width:
                       100,

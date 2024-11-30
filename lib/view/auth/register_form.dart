@@ -31,6 +31,7 @@ class _RegisterFormState extends State<RegisterForm> {
       });
 
       final user = User(
+        id: 0,
         username: _usernameController.text.trim(),
         firstName: _firstNameController.text.trim(),
         lastName: _lastNameController.text.trim(),

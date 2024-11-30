@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 
@@ -191,5 +192,31 @@ class AppUtils {
         },
       ),
     );
+  }
+
+  static String formatTimestamp(Timestamp? timestamp) {
+    if (timestamp == null) return '';
+    final dateTime = timestamp.toDate();
+    final hours = dateTime.hour.toString().padLeft(2, '0');
+    final minutes = dateTime.minute.toString().padLeft(2, '0');
+    switch (dateTime.weekday) {
+      case 1:
+        return 'Monday $hours:$minutes [${dateTime.day}-${dateTime.month}-${dateTime.year}]';
+      case 2:
+        return 'Tuesday $hours:$minutes [${dateTime.day}-${dateTime.month}-${dateTime.year}]';
+      case 3:
+        return 'Wednesday $hours:$minutes [${dateTime.day}-${dateTime.month}-${dateTime.year}]';
+      case 4:
+        return 'Thursday $hours:$minutes [${dateTime.day}-${dateTime.month}-${dateTime.year}]';
+      case 5:
+        return 'Friday $hours:$minutes [${dateTime.day}-${dateTime.month}-${dateTime.year}]';
+      case 6:
+        return 'Saturday $hours:$minutes [${dateTime.day}-${dateTime.month}-${dateTime.year}]';
+      case 7:
+        return 'Sunday $hours:$minutes [${dateTime.day}-${dateTime.month}-${dateTime.year}]';
+
+      default:
+        return 'N/A';
+    }
   }
 }

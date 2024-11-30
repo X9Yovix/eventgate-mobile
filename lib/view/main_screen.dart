@@ -1,4 +1,5 @@
 import 'package:eventgate_flutter/utils/auth_provider.dart';
+import 'package:eventgate_flutter/view/main/conversation/conversation_screen.dart';
 import 'package:eventgate_flutter/view/main/manage_events/manage_events_screen.dart';
 import 'package:eventgate_flutter/view/main/recent_events/recent_events_screen.dart';
 import 'package:eventgate_flutter/view/main/settings/settings_screen.dart';
@@ -18,7 +19,7 @@ class _MainScreenState extends State<MainScreen> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     RecentEventsScreen(),
-    Text('History'),
+    ConversationsScreen(),
     ManageEventsScreen(),
     SettingsScreen(),
   ];
@@ -33,7 +34,7 @@ class _MainScreenState extends State<MainScreen> {
       });
     } else if (index == 1) {
       setState(() {
-        _title = 'History';
+        _title = 'Conversations';
       });
     } else if (index == 2) {
       setState(() {
@@ -65,7 +66,7 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.history_outlined),
-                    label: 'History',
+                    label: 'Conversations',
                     backgroundColor: Color.fromARGB(255, 44, 2, 51),
                   ),
                   BottomNavigationBarItem(
