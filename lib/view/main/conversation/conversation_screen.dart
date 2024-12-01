@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eventgate_flutter/utils/app_utils.dart';
+import 'package:eventgate_flutter/view/main/conversation/chat/chat_screen.dart';
 import 'package:flutter/material.dart';
 
 ///import 'package:firebase_auth/firebase_auth.dart';
@@ -52,9 +53,8 @@ class _ConversationsState extends State<ConversationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Conversations $_currentUserId')),
-      body: StreamBuilder<QuerySnapshot>(
+    return SafeArea(
+      child: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('conversations')
             .where('participants', arrayContains: _currentUserIdString)
@@ -122,8 +122,18 @@ class _ConversationsState extends State<ConversationsScreen> {
           builder: (context, messageSnapshot) {
             if (messageSnapshot.connectionState == ConnectionState.waiting) {
               return ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: CachedNetworkImageProvider(profilePicture),
+                leading: ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: profilePicture,
+                    fit: BoxFit.cover,
+                    width: 50,
+                    height: 50,
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    errorWidget: (context, url, error) => const Center(
+                        child: Icon(Icons.error, color: Colors.red)),
+                  ),
                 ),
                 title: Text(name),
                 subtitle: const Text('Loading message...'),
@@ -132,8 +142,18 @@ class _ConversationsState extends State<ConversationsScreen> {
 
             if (!messageSnapshot.hasData || !messageSnapshot.data!.exists) {
               return ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: CachedNetworkImageProvider(profilePicture),
+                leading: ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: profilePicture,
+                    fit: BoxFit.cover,
+                    width: 50,
+                    height: 50,
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    errorWidget: (context, url, error) => const Center(
+                        child: Icon(Icons.error, color: Colors.red)),
+                  ),
                 ),
                 title: Text(name),
                 subtitle: const Text('No message'),
@@ -152,9 +172,17 @@ class _ConversationsState extends State<ConversationsScreen> {
             final timestamp = messageData['updated_at'] as Timestamp?;
 
             return ListTile(
-              leading: CircleAvatar(
-                backgroundImage: CachedNetworkImageProvider(
-                  profilePicture,
+              leading: ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: profilePicture,
+                  fit: BoxFit.cover,
+                  width: 50,
+                  height: 50,
+                  placeholder: (context, url) => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  errorWidget: (context, url, error) =>
+                      const Center(child: Icon(Icons.error, color: Colors.red)),
                 ),
               ),
               title: Text(name),
@@ -164,7 +192,16 @@ class _ConversationsState extends State<ConversationsScreen> {
                 style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
               onTap: () {
-                print('Navigate to $contactId');
+                AppUtils.navigateWithFade(
+                  context,
+                  ChatScreen(
+                    contactId: contactId,
+                    conversationId: conversationId,
+                    contactName: name,
+                    contactProfilePicture: profilePicture,
+                  ),
+                );
+                //print('Navigate to $contactId');
               },
             );
           },

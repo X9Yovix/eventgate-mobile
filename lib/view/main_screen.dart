@@ -65,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
                     backgroundColor: Color.fromARGB(255, 44, 2, 51),
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.history_outlined),
+                    icon: Icon(Icons.chat_bubble_outline),
                     label: 'Conversations',
                     backgroundColor: Color.fromARGB(255, 44, 2, 51),
                   ),
