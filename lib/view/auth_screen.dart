@@ -18,7 +18,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Welcome to EventGate'),
+        title: const Center(child: Text('Welcome to EventGate', textAlign: TextAlign.center)),
         titleTextStyle: const TextStyle(
           color: Color.fromARGB(255, 0, 0, 0),
           fontSize: 27,
@@ -26,7 +26,7 @@ class _AuthScreenState extends State<AuthScreen> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             SegmentedButton<AuthTabs>(
@@ -50,12 +50,19 @@ class _AuthScreenState extends State<AuthScreen> {
               },
             ),
             const SizedBox(height: 20),
-            Expanded(
-                child: Center(
-              child: selectedTab == AuthTabs.login
-                  ? const LoginForm()
-                  : const RegisterForm(),
-            )),
+             Expanded(
+              child: Center(
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder: (Widget child, Animation<double> animation) {
+                    return FadeTransition(opacity: animation, child: child);
+                  },
+                  child: selectedTab == AuthTabs.login
+                      ? const LoginForm(key: ValueKey('LoginForm'))
+                      : const RegisterForm(key: ValueKey('RegisterForm')),
+                ),
+              ),
+            ),
           ],
         ),
       ),

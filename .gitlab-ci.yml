@@ -17,6 +17,18 @@ dependency-check:
   after_script:
     - echo "Dependency check completed successfully"
 
+vulnerability-check:
+  stage: security_check
+  extends: .job-dependency
+  before_script:
+    - apt-get update && apt-get install -y python3 python3-pip python3-venv
+    - python3 -m venv venv
+    - source venv/bin/activate
+    - pip install safety
+  script:
+    - safety scan -r ./pubspec.lock
+  after_script:
+    - echo "Vulnerability check completed successfully"
 
 flutter-lint:
   stage: code_quality
@@ -28,13 +40,3 @@ flutter-lint:
   after_script:
     - echo "Flutter linting completed successfully"
 
-
-vulnerability-check:
-  stage: security_check
-  extends: .job-dependency
-  before_script:
-    - pip install safety
-  script:
-    - safety check -r ./pubspec.lock
-  after_script:
-    - echo "Vulnerability check completed successfully"

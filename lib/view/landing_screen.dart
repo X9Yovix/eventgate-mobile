@@ -23,7 +23,7 @@ class LandingScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(15.0),
+                borderRadius: BorderRadius.circular(15),
                 child: Image.asset(
                   "assets/images/landing.png",
                   width: double.infinity,
@@ -51,7 +51,8 @@ class LandingScreen extends StatelessWidget {
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
-                        "EventGate is a platform that allows you to create, find, and manage events. You can create events, invite people, and manage the event details.",
+                        "EventGate is a platform designed to help you create, discover, and manage events effortlessly.",
+                        textAlign: TextAlign.justify,
                         style: TextStyle(
                           color: Color.fromARGB(255, 128, 128, 128),
                           fontSize: 16,
@@ -59,20 +60,18 @@ class LandingScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        AppUtils.navigateWithFade(context, const AuthScreen());
+                    ElevatedButton.icon(
+                      onPressed: () => {
+                        AppUtils.navigateWithFadeAndClearStack(context, const AuthScreen())
                       },
+                      iconAlignment: IconAlignment.start,
+                      icon: const Icon(Icons.flag_outlined),
+                      label: const Text('Get Started'),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                        backgroundColor: const Color.fromARGB(255, 44, 2, 51),
+                        foregroundColor: Colors.white,
                       ),
-                      child: const Text("Get Started"),
                     ),
-                    const SizedBox(height: 20),
                   ],
                 ),
               ),

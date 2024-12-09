@@ -171,7 +171,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0),
+                    borderRadius: BorderRadius.circular(15),
                     child: Image.asset(
                       "assets/images/complete_data.png",
                       width: double.infinity,

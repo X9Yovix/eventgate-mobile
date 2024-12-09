@@ -31,6 +31,7 @@ class _RegisterFormState extends State<RegisterForm> {
       });
 
       final user = User(
+        id: 0,
         username: _usernameController.text.trim(),
         firstName: _firstNameController.text.trim(),
         lastName: _lastNameController.text.trim(),
@@ -71,135 +72,147 @@ class _RegisterFormState extends State<RegisterForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-        key: _registerFormKey,
-        child: Column(
-          children: [
-            SizedBox(
-                width: 300,
-                child: TextFormField(
-                  enabled: !_isLoading,
-                  controller: _firstNameController,
-                  decoration: const InputDecoration(
-                    labelText: 'First Name',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.info_outlined),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a first name';
-                    }
-                    return null;
-                  },
-                )),
-            const SizedBox(height: 20),
-            SizedBox(
-                width: 300,
-                child: TextFormField(
-                  enabled: !_isLoading,
-                  controller: _lastNameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Last Name',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.info_outlined),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a last name';
-                    }
-                    return null;
-                  },
-                )),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: 300,
-              child: TextFormField(
-                enabled: !_isLoading,
-                controller: _usernameController,
-                decoration: const InputDecoration(
-                  labelText: 'Username',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.perm_identity_outlined),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a username';
-                  }
-                  return null;
-                },
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(5),
+        child: Form(
+          key: _registerFormKey,
+          child: Column(
+            children: [
+              Image.asset(
+                'assets/images/register.png',
+                width: 250,
+                height: 250,
               ),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-                width: 300,
-                child: TextFormField(
-                  enabled: !_isLoading,
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.email_outlined),
-                  ),
-                  validator: (value) {
-                    if (value == null || !emailRegex.hasMatch(value)) {
-                      return 'Please enter a valid email';
-                    }
-                    return null;
-                  },
-                )),
-            const SizedBox(height: 20),
-            SizedBox(
-                width: 300,
-                child: TextFormField(
-                  enabled: !_isLoading,
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    border: const OutlineInputBorder(),
-                    prefixIcon: const Icon(Icons.password_outlined),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
+              const SizedBox(height: 10),
+              SizedBox(
+                  width: 300,
+                  child: TextFormField(
+                    enabled: !_isLoading,
+                    controller: _firstNameController,
+                    decoration: const InputDecoration(
+                      labelText: 'First Name',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.info_outlined),
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a first name';
+                      }
+                      return null;
+                    },
+                  )),
+              const SizedBox(height: 20),
+              SizedBox(
+                  width: 300,
+                  child: TextFormField(
+                    enabled: !_isLoading,
+                    controller: _lastNameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Last Name',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.info_outlined),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a last name';
+                      }
+                      return null;
+                    },
+                  )),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: 300,
+                child: TextFormField(
+                  enabled: !_isLoading,
+                  controller: _usernameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Username',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.perm_identity_outlined),
                   ),
-                  obscureText: _isPasswordVisible ? false : true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a password';
+                      return 'Please enter a username';
                     }
                     return null;
                   },
-                )),
-            const SizedBox(height: 40),
-            ElevatedButton.icon(
-              onPressed: _isLoading ? null : () => _register(context),
-              iconAlignment: IconAlignment.start,
-              icon: _isLoading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : const Icon(Icons.how_to_reg_outlined),
-              label: Text(_isLoading ? 'Registering...' : 'Register'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 44, 2, 51),
-                foregroundColor: Colors.white,
+                ),
               ),
-            ),
-          ],
-        ));
+              const SizedBox(height: 20),
+              SizedBox(
+                  width: 300,
+                  child: TextFormField(
+                    enabled: !_isLoading,
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.email_outlined),
+                    ),
+                    validator: (value) {
+                      if (value == null || !emailRegex.hasMatch(value)) {
+                        return 'Please enter a valid email';
+                      }
+                      return null;
+                    },
+                  )),
+              const SizedBox(height: 20),
+              SizedBox(
+                  width: 300,
+                  child: TextFormField(
+                    enabled: !_isLoading,
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.password_outlined),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                      ),
+                    ),
+                    obscureText: _isPasswordVisible ? false : true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a password';
+                      }
+                      return null;
+                    },
+                  )),
+              const SizedBox(height: 40),
+              ElevatedButton.icon(
+                onPressed: _isLoading ? null : () => _register(context),
+                iconAlignment: IconAlignment.start,
+                icon: _isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Icon(Icons.how_to_reg_outlined),
+                label: Text(_isLoading ? 'Registering...' : 'Register'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 44, 2, 51),
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:eventgate_flutter/utils/auth_provider.dart';
+import 'package:eventgate_flutter/view/main/conversation/conversation_screen.dart';
 import 'package:eventgate_flutter/view/main/manage_events/manage_events_screen.dart';
 import 'package:eventgate_flutter/view/main/recent_events/recent_events_screen.dart';
 import 'package:eventgate_flutter/view/main/settings/settings_screen.dart';
@@ -14,10 +15,11 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
+  String _title = 'Recent Events';
 
   static const List<Widget> _widgetOptions = <Widget>[
     RecentEventsScreen(),
-    Text('History'),
+    ConversationsScreen(),
     ManageEventsScreen(),
     SettingsScreen(),
   ];
@@ -26,6 +28,23 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       _selectedIndex = index;
     });
+    if (index == 0) {
+      setState(() {
+        _title = 'Recent Events';
+      });
+    } else if (index == 1) {
+      setState(() {
+        _title = 'Conversations';
+      });
+    } else if (index == 2) {
+      setState(() {
+        _title = 'Manage Events';
+      });
+    } else if (index == 3) {
+      setState(() {
+        _title = 'Settings';
+      });
+    }
   }
 
   @override
@@ -33,7 +52,7 @@ class _MainScreenState extends State<MainScreen> {
     return Consumer<AuthProvider>(
         builder: (context, value, child) => Scaffold(
               appBar: AppBar(
-                title: const Text('Event Gate'),
+                title: Text(_title),
               ),
               body: Center(
                 child: _widgetOptions.elementAt(_selectedIndex),
@@ -46,8 +65,8 @@ class _MainScreenState extends State<MainScreen> {
                     backgroundColor: Color.fromARGB(255, 44, 2, 51),
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.history_outlined),
-                    label: 'History',
+                    icon: Icon(Icons.chat_bubble_outline),
+                    label: 'Conversations',
                     backgroundColor: Color.fromARGB(255, 44, 2, 51),
                   ),
                   BottomNavigationBarItem(
