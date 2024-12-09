@@ -44,6 +44,7 @@ class MyApp extends StatelessWidget {
               builder: (context, value, child) {
                 return value.isAuthenticated
                     ? const MainScreen()
+                    //? const CompleteProfileScreen()
                     : const LandingScreen();
               },
             );

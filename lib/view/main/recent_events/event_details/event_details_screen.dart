@@ -113,10 +113,11 @@ class _EventDetailsState extends State<EventDetailsScreen> {
       child: ListView(
         children: [
           _buildImageCarousel(),
-          _buildInfoSection(),
-          _buildMapSection(),
           const SizedBox(height: 20),
           _buildButtonsSection(),
+          const SizedBox(height: 20),
+          _buildInfoSection(),
+          _buildMapSection(),
         ],
       ),
     );
