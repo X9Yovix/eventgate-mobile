@@ -4,6 +4,7 @@ import 'package:eventgate_flutter/model/token.dart';
 import 'package:eventgate_flutter/model/user.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart' as app_firebase_auth;
 
 class AuthProvider with ChangeNotifier {
   bool _isAuthenticated = false;
@@ -37,6 +38,8 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> logout() async {
+    await app_firebase_auth.FirebaseAuth.instance.signOut();
+
     _isAuthenticated = false;
     _user = null;
     _profile = null;

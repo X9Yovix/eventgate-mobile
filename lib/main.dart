@@ -2,12 +2,21 @@ import 'package:eventgate_flutter/utils/auth_provider.dart';
 import 'package:eventgate_flutter/view/complete_profile_screen.dart';
 import 'package:eventgate_flutter/view/landing_screen.dart';
 import 'package:eventgate_flutter/view/auth_screen.dart';
+import 'package:eventgate_flutter/view/main/manage_events/add/add_event_screen.dart';
+import 'package:eventgate_flutter/view/main/manage_events/my_events/my_events_screen.dart';
 import 'package:eventgate_flutter/view/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(ChangeNotifierProvider(
     create: (context) => AuthProvider(),
     child: const MyApp(),
@@ -35,6 +44,7 @@ class MyApp extends StatelessWidget {
               builder: (context, value, child) {
                 return value.isAuthenticated
                     ? const MainScreen()
+                    //? const CompleteProfileScreen()
                     : const LandingScreen();
               },
             );
@@ -44,6 +54,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/auth': (context) => const AuthScreen(),
         '/complete-profile': (context) => const CompleteProfileScreen(),
+        '/manage-events/add': (context) => const AddEventScreen(),
+        '/manage-events/my-events': (context) => const MyEventsScreen(),
       },
     );
   }

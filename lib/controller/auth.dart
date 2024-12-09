@@ -41,6 +41,8 @@ class AuthController {
           _profile = Profile.fromJson(response['data']['profile']);
           _token = Token.fromJson(response['data']['token']);
           _message = response['data']['message'];
+
+          authService.authenticateWithFirebase(_token!.firebaseToken);
           return;
         }
       }
