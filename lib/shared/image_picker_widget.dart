@@ -41,14 +41,24 @@ class ImagePickerWidget extends StatelessWidget {
   }
 
   Future<void> _pickImages() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-      allowMultiple: true,
-    );
+    var status = await Permission.storage.request();
 
-    if (result != null) {
-      final files = result.files.map((file) => File(file.path!)).toList();
-      onImagesChanged(files);
+    if (status.isGranted) {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: true,
+      );
+
+      if (result != null) {
+        final files = result.files.map((file) => File(file.path!)).toList();
+        onImagesChanged(files);
+      }
+    } else if (status.isDenied || status.isPermanentlyDenied) {
+      if (status.isPermanentlyDenied) {
+        openAppSettings();
+      } else {
+        debugPrint('Permission to access storage was denied');
+      }
     }
   }
 
