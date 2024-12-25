@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:eventgate_flutter/utils/app_utils.dart';
+import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -12,6 +13,32 @@ class ImagePickerWidget extends StatelessWidget {
     required this.images,
     required this.onImagesChanged,
   });
+
+  Future<void> _requestPermissions(BuildContext context) async {
+    try {
+      PermissionStatus permission = await Permission.storage.request();
+      if (permission.isGranted) {
+        _pickImages();
+      } else {
+        permission = await Permission.manageExternalStorage.request();
+        if (permission.isGranted) {
+          _pickImages();
+        } else {
+          AppUtils.showToast(
+            context,
+            'Permission to access photos was denied. Please enable it from settings.',
+            'error',
+          );
+        }
+      }
+    } catch (e) {
+      AppUtils.showToast(
+        context,
+        'An error occurred while requesting photo permissions',
+        'error',
+      );
+    }
+  }
 
   Future<void> _pickImages() async {
     var status = await Permission.storage.request();
@@ -54,7 +81,7 @@ class ImagePickerWidget extends StatelessWidget {
               side: const BorderSide(color: Color.fromARGB(255, 44, 2, 51)),
               foregroundColor: const Color.fromARGB(255, 44, 2, 51),
             ),
-            onPressed: _pickImages,
+            onPressed: () => _requestPermissions(context),
           ),
         ),
         const SizedBox(height: 10),
