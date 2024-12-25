@@ -125,16 +125,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               child: ClipOval(
                 child: CachedNetworkImage(
-                  imageUrl: (value.profile!.profilePicture != null && value.profile!.profilePicture!.isNotEmpty) ? baseUrl + value.profile!.profilePicture! : 'https://placehold.co/200' ,
+                  imageUrl: (value.profile!.profilePicture != null &&
+                          value.profile!.profilePicture!.isNotEmpty)
+                      ? baseUrl + value.profile!.profilePicture!
+                      : 'https://placehold.co/200',
                   fit: BoxFit.cover,
-                  width:
-                      100,
+                  width: 100,
                   height: 100,
                   placeholder: (context, url) => const Center(
                     child: CircularProgressIndicator(),
                   ),
-                  errorWidget: (context, url, error) =>
-                      const Center(child: Icon(Icons.error, color: Colors.red)),
+                  errorWidget: (context, url, error) => Image.asset(
+                    'assets/images/thumbnail.png',
+                    fit: BoxFit.cover,
+                    width: 50,
+                    height: 50,
+                  ),
                 ),
               ),
             ),

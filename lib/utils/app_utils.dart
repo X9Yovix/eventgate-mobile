@@ -199,24 +199,34 @@ class AppUtils {
     final dateTime = timestamp.toDate();
     final hours = dateTime.hour.toString().padLeft(2, '0');
     final minutes = dateTime.minute.toString().padLeft(2, '0');
+    String dayOfWeek = '';
     switch (dateTime.weekday) {
       case 1:
-        return 'Monday $hours:$minutes [${dateTime.day}-${dateTime.month}-${dateTime.year}]';
+        dayOfWeek = 'Mo';
+        break;
       case 2:
-        return 'Tuesday $hours:$minutes [${dateTime.day}-${dateTime.month}-${dateTime.year}]';
+        dayOfWeek = 'Tu';
+        break;
       case 3:
-        return 'Wednesday $hours:$minutes [${dateTime.day}-${dateTime.month}-${dateTime.year}]';
+        dayOfWeek = 'We';
+        break;
       case 4:
-        return 'Thursday $hours:$minutes [${dateTime.day}-${dateTime.month}-${dateTime.year}]';
+        dayOfWeek = 'Th';
+        break;
       case 5:
-        return 'Friday $hours:$minutes [${dateTime.day}-${dateTime.month}-${dateTime.year}]';
+        dayOfWeek = 'Fr';
+        break;
       case 6:
-        return 'Saturday $hours:$minutes [${dateTime.day}-${dateTime.month}-${dateTime.year}]';
+        dayOfWeek = 'Sa';
+        break;
       case 7:
-        return 'Sunday $hours:$minutes [${dateTime.day}-${dateTime.month}-${dateTime.year}]';
-
+        dayOfWeek = 'Su';
+        break;
       default:
-        return 'N/A';
+        dayOfWeek = 'N/A';
     }
+
+    String fullDate = '${dateTime.day}-${dateTime.month}-${dateTime.year}';
+    return '$dayOfWeek, $hours:$minutes\n$fullDate';
   }
 }
